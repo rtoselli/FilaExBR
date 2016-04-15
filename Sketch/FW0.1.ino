@@ -1,7 +1,7 @@
 /*
-Library examples for TM1638.
+FilaEx FW01
 
-Copyright (C) 2011 Ricardo Batista <rjbatista at gmail dot com>
+Raphael Toselli
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the version 3 GNU General Public License as
