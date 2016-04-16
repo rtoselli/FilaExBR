@@ -24,7 +24,7 @@
 
 //#define DEBUGMODE 1
 
-#define FW_VER "V0.3.4 - Rapps"
+#define FW_VER "V1.0.1 - Rapps"
 #define ABS_TEMP 220
 #define PLA_TEMP 180
 #define PET_TEMP 220
@@ -137,7 +137,6 @@ void setup() {
   lcd.print(FW_VER);
   delay(1200);
   lcd.clear();
-  windowStartTime = millis();
   PIDsetup();
 
 }
@@ -190,6 +189,7 @@ void RunPID()
   
   double gap = abs(Setpoint - Input); //distance away from setpoint
   printDebugData("Gap: " + String(gap));
+  
   if (gap < 10)
   { //we're close to setpoint, use conservative tuning parameters
     printDebugData("PID MODE: Conservative");
@@ -255,22 +255,24 @@ void SetTemp()
     String tempStr = String("Temp ");
     tempStr += actualTemp ;
     tempStr += "/" +  String(tempSet);
-    //module.clearDisplay();
+
+    
     lcd.print(tempStr);
     lcd.print("        ");
+    
     lcd.setCursor(0, 1);
     lcd.print("Heat-");
     lcd.print(( heaterOn ? "On" : "Off"));
+    
     lcd.print(" Mot-");
     lcd.print(( motorOn ? "On" : "Off"));
     lcd.print("        ");
-    if ( abs(tempSet - actualTemp) > MIN_TEMP_DIFF_MOTOR) {
-      motorOn = false;
-    }
+    
+    if ( abs(tempSet - actualTemp) > MIN_TEMP_DIFF_MOTOR) 
+        motorOn = false;
     else if ( ( abs(tempSet - actualTemp)  <= MIN_TEMP_DIFF_MOTOR && actualTemp > MIN_EXTRUSION_TEMP  ))
-    {
-      motorOn = true;
-    }
+        motorOn = true;
+        
     sample = 0;
   }
 
@@ -294,12 +296,9 @@ int getTemp()
   int auxTemp = 0;
   for ( int i = 0; i < TEMP_SAMPLES; i++)
   {
-    //Serial.println(tempArray[i]);
     auxTemp += tempArray[i];
   }
 
-  /*Serial.print("T:");
-    Serial.println(auxTemp / TEMP_SAMPLES);*/
 
 #ifdef DEBUGMODE
   return debugTemp;
@@ -383,15 +382,12 @@ void PIDsetup() {
   lcd.setCursor(0, 1);
   lcd.print("     P I D    ");
   delay(1000);
-  //analogReference(EXTERNAL);
+  
   for (int i = 0; i < TEMP_SAMPLES; i++)
     AquireTempSamples();
 
-  //Timer
   windowStartTime = millis();
-
   heaterPID.SetOutputLimits(0, WindowSize);//tell the PID to range between 0 and the full window size
-  //inizializzo le variabili
   Input = getTemp();
   printDebugData("Temp: " + String(Input));
   heaterPID.SetMode(AUTOMATIC);
