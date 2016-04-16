@@ -22,7 +22,7 @@
 #include <PID_v1.h>
 
 
-#define DEBUGMODE false
+//#define DEBUGMODE 1
 
 #define FW_VER "V0.3.4 - Rapps"
 #define ABS_TEMP 220
