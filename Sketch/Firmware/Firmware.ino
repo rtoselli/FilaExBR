@@ -131,11 +131,12 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
-  // Print a message to the LCD.
+  
   lcd.print("FilaExt");
   lcd.setCursor(0, 1);
   lcd.print(FW_VER);
   delay(1200);
+  
   lcd.clear();
   PIDsetup();
 
@@ -156,7 +157,7 @@ void loop() {
     }
   #endif
   
-  AquireTempSamples();
+  AcquireTempSamples();
 
   if ( btup.read()  == 0 && btmenu.read() == 0 )
     button_up();
@@ -245,9 +246,6 @@ void printDebugData(String data)
 
 void SetTemp()
 {
-
-
-
   if ( sample >= TEMP_SAMPLES )
   {
     lcd.setCursor(0, 0);
@@ -275,20 +273,17 @@ void SetTemp()
         
     sample = 0;
   }
-
 }
 
 
-void AquireTempSamples()
+void AcquireTempSamples()
 {
-
   if (sample < TEMP_SAMPLES )
   {
     tempArray[sample] = read_temp();
     sample++;
     delay(30);
   }
-
 }
 
 int getTemp()
@@ -299,17 +294,15 @@ int getTemp()
     auxTemp += tempArray[i];
   }
 
-
-#ifdef DEBUGMODE
-  return debugTemp;
-#else
-  return auxTemp / TEMP_SAMPLES;
-#endif
-
+  #ifdef DEBUGMODE
+    return debugTemp;
+  #else
+    return auxTemp / TEMP_SAMPLES;
+  #endif
 }
+
 void button_up()
 {
-
   if ( millis() -  btmillis > incrementRate && tempSet < MAX_TEMP )
   {
     tempSet += 5;
@@ -339,7 +332,6 @@ void rpm_down()
 
 void rpm_up()
 {
-
   if ( millis() -  btmillis > incrementRate && rpmSet < 255 )
   {
     rpmSet += 5;
