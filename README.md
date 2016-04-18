@@ -4,7 +4,7 @@
 Código e hardware para uma filamentadora simples de baixo custo, com controle pid para a temperatura e PWM para a velocidade do motor.
 O codigo está em constante desenvolvimento, acompanhe o repositório para as últimas versões.
 
-Todo o conteúdo desse repositório está disponivel sob a licença GNU - GPL, e não me responsabiliso por qualquer dano pelo o uso impróprio dos arquivos contidos aqui.
+Todo o conteúdo desse repositório está disponivel sob a licença GNU - GPL, e não me responsabilizo por qualquer dano pelo o uso impróprio dos arquivos contidos aqui.
 
 # Board 
 
