@@ -1,11 +1,14 @@
 # FilaExBR
 
-![FilaExBR](/Board/filaex.png?raw=true "FilaExBR")
 
 Código e hardware para uma filamentadora simples de baixo custo, com controle pid para a temperatura e PWM para a velocidade do motor.
 O codigo está em constante desenvolvimento, acompanhe o repositório para as últimas versões.
 
 Todo o conteúdo desse repositório está disponivel sob a licença GNU - GPL, e não me responsabiliso por qualquer dano pelo o uso impróprio dos arquivos contidos aqui.
+
+# Board 
+
+![FilaExBR](/Board/filaex.png?raw=true "FilaExBR")
 
 #Bill of materials
 Pin Header 1x2 - 3 Un
