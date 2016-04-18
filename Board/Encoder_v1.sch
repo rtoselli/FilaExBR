@@ -3021,8 +3021,8 @@ often used in power supply to prevent damage from reverse polarization
 </class>
 </classes>
 <parts>
-<part name="Q1" library="transistor-fet" deviceset="IRF620" device=""/>
-<part name="Q2" library="transistor-fet" deviceset="IRF620" device=""/>
+<part name="Q1" library="transistor-fet" deviceset="IRF620" device="" value="IRF640"/>
+<part name="Q2" library="transistor-fet" deviceset="IRF620" device="" value="IRF640"/>
 <part name="12V" library="dp_devices" deviceset="CON_TERMINAL_BLOCK_02" device="-5MM"/>
 <part name="HEATER" library="dp_devices" deviceset="CON_TERMINAL_BLOCK_02" device="-5MM"/>
 <part name="MOTOR" library="dp_devices" deviceset="CON_TERMINAL_BLOCK_02" device="-5MM"/>

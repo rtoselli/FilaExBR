@@ -597,6 +597,54 @@ EC12E series with push-on switch</description>
 </package>
 </packages>
 </library>
+<library name="SparkFun-Aesthetics">
+<description>&lt;h3&gt;SparkFun Electronics' preferred foot prints&lt;/h3&gt;
+In this library you'll find non-functional items- supply symbols, logos, notations, frame blocks, etc.&lt;br&gt;&lt;br&gt;
+We've spent an enormous amount of time creating and checking these footprints and parts, but it is the end user's responsibility to ensure correctness and suitablity for a given componet or application. If you enjoy using this library, please buy one of our products at www.sparkfun.com.
+&lt;br&gt;&lt;br&gt;
+&lt;b&gt;Licensing:&lt;/b&gt; Creative Commons ShareAlike 4.0 International - https://creativecommons.org/licenses/by-sa/4.0/ 
+&lt;br&gt;&lt;br&gt;
+You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
+<packages>
+<package name="OSHW-LOGO-M_COPPER">
+<polygon width="0.15" layer="1">
+<vertex x="0.6578" y="-1.588" curve="9.499253"/>
+<vertex x="0.9108" y="-1.4576"/>
+<vertex x="1.5392" y="-1.97"/>
+<vertex x="1.97" y="-1.5392"/>
+<vertex x="1.4576" y="-0.9108" curve="19.001165"/>
+<vertex x="1.6747" y="-0.3866"/>
+<vertex x="2.4814" y="-0.3047"/>
+<vertex x="2.4814" y="0.3047"/>
+<vertex x="1.6747" y="0.3866" curve="19.001165"/>
+<vertex x="1.4576" y="0.9108"/>
+<vertex x="1.97" y="1.5392"/>
+<vertex x="1.5392" y="1.97"/>
+<vertex x="0.9108" y="1.4576" curve="19.001165"/>
+<vertex x="0.3866" y="1.6747"/>
+<vertex x="0.3047" y="2.4814"/>
+<vertex x="-0.3047" y="2.4814"/>
+<vertex x="-0.3866" y="1.6747" curve="19.001165"/>
+<vertex x="-0.9108" y="1.4576"/>
+<vertex x="-1.5392" y="1.97"/>
+<vertex x="-1.97" y="1.5392"/>
+<vertex x="-1.4576" y="0.9108" curve="19.001165"/>
+<vertex x="-1.6747" y="0.3866"/>
+<vertex x="-2.4814" y="0.3047"/>
+<vertex x="-2.4814" y="-0.3047"/>
+<vertex x="-1.6747" y="-0.3866" curve="19.001165"/>
+<vertex x="-1.4576" y="-0.9108"/>
+<vertex x="-1.97" y="-1.5392"/>
+<vertex x="-1.5392" y="-1.97"/>
+<vertex x="-0.9108" y="-1.4576" curve="9.499253"/>
+<vertex x="-0.6578" y="-1.588"/>
+<vertex x="-0.299" y="-0.7218" curve="-67.507353"/>
+<vertex x="-0.7813" y="0" curve="-247.497552"/>
+<vertex x="0.299" y="-0.7218"/>
+</polygon>
+</package>
+</packages>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -795,8 +843,8 @@ design rules under a new name.</description>
 <element name="LED2" library="adafruit" package="LED5MM" value="" x="7.62" y="46.99"/>
 <element name="MOTOR" library="dp_devices" package="TERMINAL_BLOCK_2P_5" value="CON_TERMINAL_BLOCK_02-5MM" x="7.62" y="57.15" rot="R90"/>
 <element name="POW" library="gm-switches" package="M9040P" value="" x="67.818" y="9.398" rot="R180"/>
-<element name="Q1" library="transistor-fet" package="TO220" value="IRF620" x="24.13" y="48.26"/>
-<element name="Q2" library="transistor-fet" package="TO220" value="IRF620" x="24.13" y="19.05"/>
+<element name="Q1" library="transistor-fet" package="TO220" value="IRF640" x="24.13" y="48.26"/>
+<element name="Q2" library="transistor-fet" package="TO220" value="IRF640" x="24.13" y="19.05"/>
 <element name="R1" library="SparkFun-Passives" package="AXIAL-0.4" value="220R" x="11.43" y="6.35"/>
 <element name="R2" library="SparkFun-Passives" package="AXIAL-0.4" value="220R" x="11.43" y="38.1" rot="R180"/>
 <element name="R3" library="SparkFun-Passives" package="AXIAL-0.4" value="47k" x="66.04" y="34.29" rot="R90"/>
@@ -811,6 +859,7 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="78.74" y="52.07" size="1.778" layer="27" display="off"/>
 </element>
 <element name="D1" library="gm-diodes" package="DO41-4" value="1n4007" x="13.97" y="57.15" rot="R90"/>
+<element name="U$3" library="SparkFun-Aesthetics" package="OSHW-LOGO-M_COPPER" value="" x="45.974" y="84.582" rot="MR0"/>
 </elements>
 <signals>
 <signal name="N$1">
