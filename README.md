@@ -23,7 +23,7 @@ LED5MM - 2 Un
                                                         
 Switch SPDT - 1 Un
 
-IRF620 N-Channel Enhancement MOSFET (HEXFET); 200V; 5,2A; 0,8Ohm  - 2 Un
+IRF640 N-Channel Enhancement MOSFET (HEXFET); 200V; 18A; 0,18hm  - 2 Un
                               
 R1 - 220R
 
