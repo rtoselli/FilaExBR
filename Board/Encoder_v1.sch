@@ -3576,6 +3576,7 @@ often used in power supply to prevent damage from reverse polarization
 <sheets>
 <sheet>
 <plain>
+<text x="66.04" y="129.54" size="1.778" layer="91">The library that i used to connect the nano has the analog pins reversed! Be carefull!</text>
 </plain>
 <instances>
 <instance part="Q1" gate="G$1" x="63.5" y="40.64" rot="R90"/>
@@ -3695,9 +3696,11 @@ often used in power supply to prevent damage from reverse polarization
 <wire x1="137.16" y1="76.2" x2="137.16" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="THERMISTOR" gate="G$1" pin="2"/>
 <wire x1="137.16" y1="55.88" x2="142.24" y2="55.88" width="0.1524" layer="91"/>
-<pinref part="A01" gate="G$1" pin="A5"/>
-<wire x1="137.16" y1="55.88" x2="114.3" y2="55.88" width="0.1524" layer="91"/>
-<junction x="137.16" y="55.88"/>
+<wire x1="142.24" y1="55.88" x2="124.46" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="55.88" x2="124.46" y2="45.72" width="0.1524" layer="91"/>
+<junction x="142.24" y="55.88"/>
+<pinref part="A01" gate="G$1" pin="A7"/>
+<wire x1="124.46" y1="45.72" x2="114.3" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="+12V" class="0">
@@ -3768,30 +3771,23 @@ often used in power supply to prevent damage from reverse polarization
 <wire x1="124.46" y1="-5.08" x2="124.46" y2="5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$3" class="0">
-<segment>
-<pinref part="A01" gate="G$1" pin="A0"/>
-<pinref part="SW1" gate="G$2" pin="2"/>
-<wire x1="114.3" y1="81.28" x2="152.4" y2="81.28" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$7" class="0">
 <segment>
 <pinref part="SW1" gate="G$1" pin="A"/>
-<wire x1="157.48" y1="119.38" x2="119.38" y2="119.38" width="0.1524" layer="91"/>
-<wire x1="119.38" y1="119.38" x2="119.38" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="A01" gate="G$1" pin="A1"/>
-<wire x1="114.3" y1="76.2" x2="119.38" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="157.48" y1="119.38" x2="116.84" y2="119.38" width="0.1524" layer="91"/>
+<pinref part="A01" gate="G$1" pin="A5"/>
+<wire x1="114.3" y1="55.88" x2="116.84" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="119.38" x2="116.84" y2="55.88" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
 <segment>
 <pinref part="SW1" gate="G$1" pin="B"/>
 <wire x1="162.56" y1="119.38" x2="162.56" y2="124.46" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="124.46" x2="121.92" y2="124.46" width="0.1524" layer="91"/>
-<wire x1="121.92" y1="124.46" x2="121.92" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="A01" gate="G$1" pin="A2"/>
-<wire x1="121.92" y1="71.12" x2="114.3" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="A01" gate="G$1" pin="A6"/>
+<wire x1="119.38" y1="50.8" x2="114.3" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="124.46" x2="119.38" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="124.46" x2="119.38" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$9" class="0">
@@ -3918,6 +3914,15 @@ often used in power supply to prevent damage from reverse polarization
 <pinref part="LED2" gate="G$1" pin="C"/>
 <pinref part="R2" gate="G$1" pin="2"/>
 <wire x1="66.04" y1="22.86" x2="66.04" y2="17.78" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="A01" gate="G$1" pin="A4"/>
+<wire x1="114.3" y1="60.96" x2="129.54" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="60.96" x2="129.54" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="SW1" gate="G$2" pin="2"/>
+<wire x1="129.54" y1="81.28" x2="152.4" y2="81.28" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
