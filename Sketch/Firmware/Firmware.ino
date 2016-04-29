@@ -1,3 +1,5 @@
+
+
 /*
   FilaEx FW02
 
@@ -20,24 +22,25 @@
 #include <LiquidCrystal.h>
 #include <Bounce2.h>
 #include <PID_v1.h>
+#include <Encoder.h>
 
-//#define DEBUGMODE false
+#define DEBUGMODE 1
 
-#define FW_VER "V0.3.5 - Encoder"
+#define FW_VER "V1.3.6 - Encoder"
 #define ABS_TEMP 220
 #define PLA_TEMP 180
 #define PET_TEMP 220
 
 #define THERMISTOR_PIN A2
-#define MOTOR_PIN 5
-#define HEATER_PIN 3
-#define ENCODER_SW A4
-#define ENCODER_A A6
-#define ENCODER_B A5
+#define MOTOR_PIN 3
+#define HEATER_PIN 5
+#define ENCODER0_SW A5
+#define ENCODER0_A A4
+#define ENCODER0_B A3
 
 #define TEMP_SAMPLES 10
 #define MAX_TEMP 280
-#define MIN_TEMP_DIFF_MOTOR 5
+#define MIN_TEMP_DIFF_MOTOR 15
 #define MIN_EXTRUSION_TEMP 160
 
 #define NUMTEMPS 20
@@ -65,26 +68,26 @@ short temptable[NUMTEMPS][2] = {
 };
 
 
+
 // Globals 
 
-int debugTemp = 160;
-int incrementRate = 10;
+int debugTemp = 165;
+int incrementRate = 5; 
 int tempSet = 0;
 int rpmSet = 255;
 int actualTemp = 0;
 int sample = 0;
 int tempArray[TEMP_SAMPLES];
 int EncSWLastState = 1;
+int animState = 0;
 long timertemp = 0;
 long btmillis = 500;
+long encoder0OldPos  = -999;
 bool heaterOn = false;
 bool motorOn = false;
 bool menuState = false;
 
-int encoder0Pos = 0;
-int encoder0LastPos = 0;
-int encoder0PinALast = HIGH;
-int n = HIGH;
+
 
 
 // PID
@@ -95,7 +98,7 @@ int NewSetpoint;
 double aggKp = 2400, aggKi = 0, aggKd = 0;
 double consKp = 1200, consKi = 0.00, consKd = 0.00;
 //Timer
-int WindowSize = 5000;
+int WindowSize = 400;
 unsigned long windowStartTime;
 
 //Specify the links and initial tuning parameters
@@ -106,26 +109,28 @@ LiquidCrystal lcd(12, 11, 9, 8, 7, 6);
 
 Bounce btEncoder = Bounce();
 
+Encoder E0(ENCODER0_A, ENCODER0_B);
 
 void setup() {
   pinMode(HEATER_PIN, OUTPUT);
   pinMode(MOTOR_PIN, OUTPUT);
 
-  btEncoder.attach(ENCODER_SW);
+  btEncoder.attach(ENCODER0_SW);
   btEncoder.interval(100);
 
-  pinMode(ENCODER_SW, INPUT);
-  digitalWrite(ENCODER_SW, HIGH);
+  pinMode(ENCODER0_SW, INPUT);
+  digitalWrite(ENCODER0_SW, HIGH);
 
-  pinMode(ENCODER_A, INPUT);
-  digitalWrite(ENCODER_A, HIGH);
+  pinMode(ENCODER0_A, INPUT);
+  digitalWrite(ENCODER0_A, HIGH);
 
-  pinMode(ENCODER_B, INPUT);
-  digitalWrite(ENCODER_B, HIGH);
+  pinMode(ENCODER0_B, INPUT);
+  digitalWrite(ENCODER0_B, HIGH);
 
   digitalWrite(HEATER_PIN, heaterOn);
   digitalWrite(MOTOR_PIN, motorOn);
   Serial.begin(9600);
+  
 
 
 
@@ -146,42 +151,30 @@ void setup() {
 }
 
 void loop() {
-    btEncoder.update ();
-    n = digitalRead(ENCODER_A);
   
-   if ((encoder0PinALast == LOW) && (n == HIGH)) {
-     if (digitalRead(ENCODER_B) == LOW) {
-       encoder0Pos--;
-     } else {
-       encoder0Pos++;
-     }
-     Serial.print (encoder0Pos);
-     Serial.print ("/");
-    encoder0PinALast = n;
-   } 
-   
-   
-   
-   if ( encoder0LastPos != encoder0Pos ) { 
-      Serial.println(encoder0Pos);
+  btEncoder.update();
+  
+  long newPosition = E0.read();
+  if ( newPosition !=  encoder0OldPos ) { 
+    
     if ( menuState == false )
     {
-      if (encoder0LastPos >  encoder0Pos) 
+      if (newPosition >  encoder0OldPos) 
         temp_up();
       else 
         temp_down();
     }
     else if ( menuState == true ) 
     {
-      if ( encoder0LastPos >  encoder0Pos ) 
+      if ( newPosition >  encoder0OldPos ) 
         rpm_up();
       else 
         rpm_down();
     
     }
-    encoder0LastPos = encoder0Pos;
-  }
-  
+  encoder0OldPos = newPosition;
+}
+
   #ifdef DEBUGMODE
     char incomingByte;
     char bufferc[] = {' ',' ',' ',' ',' '};
@@ -208,14 +201,14 @@ void loop() {
     digitalWrite(MOTOR_PIN, LOW);
 
   int SWState =  btEncoder.read();
-  Serial.println(SWState);
   
   if ( SWState == 0 && EncSWLastState != SWState )
   {
     menuState = !menuState;
     EncSWLastState = SWState; 
     
-  } else  {
+  } else {
+    
     EncSWLastState = 1;
   }
 
@@ -277,7 +270,7 @@ void RpmControl()
 void printDebugData(String data)
 {
   #ifdef DEBUGMODE
-    Serial.println(data);
+    //Serial.println(data);
     //delay(400);
   #endif
 }
@@ -287,7 +280,7 @@ void SetTemp()
 
 
 
-  if ( sample >= TEMP_SAMPLES )
+  if ( sample >= TEMP_SAMPLES && abs(millis() - timertemp) > 100)
   {
     lcd.setCursor(0, 0);
     actualTemp = getTemp();
@@ -298,19 +291,21 @@ void SetTemp()
     lcd.print(tempStr);
     lcd.print("        ");
     lcd.setCursor(0, 1);
-    lcd.print("Heat-");
-    lcd.print(( heaterOn ? "On" : "Off"));
-    lcd.print(" Mot-");
-    lcd.print(( motorOn ? "On" : "Off"));
+    char c = animate();
+    lcd.print("Heat:");
+    lcd.print(( heaterOn ? c : '-'));
+    lcd.print(" Mot:");
+    lcd.print(( motorOn ? c : '-'));
     lcd.print("        ");
-    if ( abs(tempSet - actualTemp) > MIN_TEMP_DIFF_MOTOR) {
+    if ( abs(tempSet - actualTemp) > MIN_TEMP_DIFF_MOTOR || actualTemp < MIN_EXTRUSION_TEMP ) {
       motorOn = false;
     }
-    else if ( ( abs(tempSet - actualTemp)  <= MIN_TEMP_DIFF_MOTOR && actualTemp > MIN_EXTRUSION_TEMP  ))
+    else if ( ( abs(tempSet - actualTemp)  <= MIN_TEMP_DIFF_MOTOR && actualTemp >= MIN_EXTRUSION_TEMP ))
     {
       motorOn = true;
     }
     sample = 0;
+    timertemp = millis();
   }
 
 }
@@ -323,11 +318,35 @@ void AquireTempSamples()
   {
     tempArray[sample] = read_temp();
     sample++;
-    delay(30);
   }
 
 }
 
+
+char animate()
+{
+  char c;
+  switch(animState)
+  {
+    case 0:
+          c = '|';
+          break;
+    case 1:
+          c = '/';
+          break;
+    case 2:
+          c = '-';
+          break;
+    case 3:
+          c = 92;
+          animState = -1;
+          break;
+          
+  }
+  animState++;
+  return c;
+  
+}
 int getTemp()
 {
   int auxTemp = 0;
@@ -352,7 +371,7 @@ void temp_up()
 
   if ( millis() -  btmillis > incrementRate && tempSet < MAX_TEMP )
   {
-    tempSet += 5;
+    tempSet += 1;
     btmillis = millis();
   }
 }
@@ -361,7 +380,7 @@ void temp_down()
 {
   if (  millis() - btmillis > incrementRate && tempSet > 0 )
   {
-    tempSet -= 5;
+    tempSet -= 1;
     btmillis = millis();
   }
 }
