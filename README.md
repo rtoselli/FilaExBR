@@ -1,29 +1,38 @@
 # FilaExBR
 
-
 Código e hardware para uma filamentadora simples de baixo custo, com controle pid para a temperatura e PWM para a velocidade do motor.
 O codigo está em constante desenvolvimento, acompanhe o repositório para as últimas versões.
 
 Todo o conteúdo desse repositório está disponivel sob a licença GNU - GPL, e não me responsabilizo por qualquer dano pelo o uso impróprio dos arquivos contidos aqui.
 
+-----
+
+Hardware and code for a simple filament extruder control board with low cost and high power, PID and PWM for motor/temperature control. 
+The code evolves fast, keep an eye for new versions. 
+
+All files in this repository are under the GNU - GPL license, use at your own risk, i am not responsible for any harm done by the misuse of the files contained here.
+
+
 # Board 
 
 ![FilaExBR](/Board/filaex.png?raw=true "FilaExBR")
 
-#Bill of materials
-Pin Header 1x2 - 3 Un
+The top layer routing represent jumpers, no need for a double sided PCB!
 
-Borne de duas entradas passo 5mm - 3 Un
+#Bill of materials
+Pin Header 1x2 - 3 
+
+Terminal block 5mm - 3
 
 D1 - 1n4007
  
-Regulador linear 7805 - 1 Un
+Linear Regulator 7805 - 1 
 
-LED5MM - 2 Un
+LED5MM - 2 
                                                         
-Switch SPDT - 1 Un
+Switch SPDT - 15A @ 12V - 1 
 
-IRF640 N-Channel Enhancement MOSFET (HEXFET); 200V; 18A; 0,18hm  - 2 Un
+IRF640 N-Channel Enhancement MOSFET (HEXFET); 200V; 18A; 0,18Ohm  - 2 
                               
 R1 - 220R
 
@@ -33,9 +42,9 @@ R3 - 47k
 
 Trimpot 300R
 
-ALPS rotary Encoder EC12E com switch - 1 UN
+ALPS rotary Encoder EC12E with switch - 1 UN
                                                                              
 ARDUINO NANO - 1Un
 
-Display LCD HD44780LCD 16X02 - 1 Un
+LCD Display HD44780LCD 16X02 - 1 Un
                                                  
