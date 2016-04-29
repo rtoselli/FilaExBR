@@ -1,5 +1,5 @@
 /*
-  FilaEx FW01
+  FilaEx FW02
 
   Raphael Toselli
 
@@ -16,69 +16,29 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// include the library code:
+// Libraries:
 #include <LiquidCrystal.h>
 #include <Bounce2.h>
 #include <PID_v1.h>
 
+//#define DEBUGMODE false
 
-//#define DEBUGMODE 1
-
-#define FW_VER "V1.0.1 - Rapps"
+#define FW_VER "V0.3.5 - Encoder"
 #define ABS_TEMP 220
 #define PLA_TEMP 180
 #define PET_TEMP 220
 
-#define THERMISTOR_PIN A5
+#define THERMISTOR_PIN A2
 #define MOTOR_PIN 5
 #define HEATER_PIN 3
-
-#define BUTTON_UP A4
-#define BUTTON_DOWN A1
-#define MENU_SWITCH 2
+#define ENCODER_SW A4
+#define ENCODER_A A6
+#define ENCODER_B A5
 
 #define TEMP_SAMPLES 10
 #define MAX_TEMP 280
 #define MIN_TEMP_DIFF_MOTOR 5
 #define MIN_EXTRUSION_TEMP 160
-
-// initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
-
-// PID
-double Input, Output;
-double Setpoint;
-int NewSetpoint;
-//Define the aggressive and conservative Tuning Parameters
-double aggKp=4, aggKi=0.2, aggKd=1;
-double consKp=1, consKi=0.05, consKd=0.25;
-//Timer
-int WindowSize = 150;
-unsigned long windowStartTime;
-
-//Specify the links and initial tuning parameters
-PID heaterPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
-
-
-
-Bounce btup = Bounce();
-Bounce btdw = Bounce();
-Bounce btmenu = Bounce();
-
-int debugTemp = 160;
-int incrementRate = 100;
-int tempSet = 0;
-int rpmSet = 255;
-long timertemp = 0;
-long btmillis = 500;
-int actualTemp = 0;
-int sample = 0;
-
-
-int tempArray[TEMP_SAMPLES];
-
-bool heaterOn = false;
-bool motorOn = false;
 
 #define NUMTEMPS 20
 short temptable[NUMTEMPS][2] = {
@@ -104,51 +64,126 @@ short temptable[NUMTEMPS][2] = {
   {1008, 3}
 };
 
+
+// Globals 
+
+int debugTemp = 160;
+int incrementRate = 10;
+int tempSet = 0;
+int rpmSet = 255;
+int actualTemp = 0;
+int sample = 0;
+int tempArray[TEMP_SAMPLES];
+int EncSWLastState = 1;
+long timertemp = 0;
+long btmillis = 500;
+bool heaterOn = false;
+bool motorOn = false;
+bool menuState = false;
+
+int encoder0Pos = 0;
+int encoder0LastPos = 0;
+int encoder0PinALast = HIGH;
+int n = HIGH;
+
+
+// PID
+double Input, Output;
+double Setpoint;
+int NewSetpoint;
+//Define the aggressive and conservative Tuning Parameters
+double aggKp = 2400, aggKi = 0, aggKd = 0;
+double consKp = 1200, consKi = 0.00, consKd = 0.00;
+//Timer
+int WindowSize = 5000;
+unsigned long windowStartTime;
+
+//Specify the links and initial tuning parameters
+PID heaterPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
+
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 9, 8, 7, 6);
+
+Bounce btEncoder = Bounce();
+
+
 void setup() {
   pinMode(HEATER_PIN, OUTPUT);
   pinMode(MOTOR_PIN, OUTPUT);
 
-  pinMode(BUTTON_UP, INPUT);
-  digitalWrite(BUTTON_UP, HIGH);
+  btEncoder.attach(ENCODER_SW);
+  btEncoder.interval(100);
 
-  pinMode(BUTTON_DOWN, INPUT);
-  digitalWrite(BUTTON_DOWN, HIGH);
+  pinMode(ENCODER_SW, INPUT);
+  digitalWrite(ENCODER_SW, HIGH);
+
+  pinMode(ENCODER_A, INPUT);
+  digitalWrite(ENCODER_A, HIGH);
+
+  pinMode(ENCODER_B, INPUT);
+  digitalWrite(ENCODER_B, HIGH);
 
   digitalWrite(HEATER_PIN, heaterOn);
   digitalWrite(MOTOR_PIN, motorOn);
   Serial.begin(9600);
 
-  btup.attach(BUTTON_UP);
-  btup.interval(50);
-
-  btdw.attach(BUTTON_DOWN);
-  btdw.interval(50);
-
-  btmenu.attach(MENU_SWITCH);
-  btmenu.interval(50);
 
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
-  
+  // Print a message to the LCD.
   lcd.print("FilaExt");
   lcd.setCursor(0, 1);
   lcd.print(FW_VER);
   delay(1200);
-  
   lcd.clear();
+  windowStartTime = millis();
   PIDsetup();
+
+  Serial.print("OK");
 
 }
 
 void loop() {
-  btup.update ( );
-  btdw.update ( );
-  btmenu.update ( );
-  char incomingByte;
+    btEncoder.update ();
+    n = digitalRead(ENCODER_A);
+  
+   if ((encoder0PinALast == LOW) && (n == HIGH)) {
+     if (digitalRead(ENCODER_B) == LOW) {
+       encoder0Pos--;
+     } else {
+       encoder0Pos++;
+     }
+     Serial.print (encoder0Pos);
+     Serial.print ("/");
+    encoder0PinALast = n;
+   } 
+   
+   
+   
+   if ( encoder0LastPos != encoder0Pos ) { 
+      Serial.println(encoder0Pos);
+    if ( menuState == false )
+    {
+      if (encoder0LastPos >  encoder0Pos) 
+        temp_up();
+      else 
+        temp_down();
+    }
+    else if ( menuState == true ) 
+    {
+      if ( encoder0LastPos >  encoder0Pos ) 
+        rpm_up();
+      else 
+        rpm_down();
+    
+    }
+    encoder0LastPos = encoder0Pos;
+  }
   
   #ifdef DEBUGMODE
+    char incomingByte;
     char bufferc[] = {' ',' ',' ',' ',' '};
     if (Serial.available())
     {
@@ -157,19 +192,10 @@ void loop() {
     }
   #endif
   
-  AcquireTempSamples();
+  AquireTempSamples();
 
-  if ( btup.read()  == 0 && btmenu.read() == 0 )
-    button_up();
-  else if ( btup.read() == 0 && btmenu.read() == 1 )
-    rpm_up();
-
-  if ( btdw.read()  == 0 && btmenu.read() == 0)
-    button_down();
-  else if ( btdw.read() == 0 && btmenu.read() == 1 )
-    rpm_down();
-
-  if (  btmenu.read() == 0 )
+  
+  if ( menuState == 0 )
     SetTemp();
   else
     RpmControl();
@@ -181,6 +207,19 @@ void loop() {
   else
     digitalWrite(MOTOR_PIN, LOW);
 
+  int SWState =  btEncoder.read();
+  Serial.println(SWState);
+  
+  if ( SWState == 0 && EncSWLastState != SWState )
+  {
+    menuState = !menuState;
+    EncSWLastState = SWState; 
+    
+  } else  {
+    EncSWLastState = 1;
+  }
+
+    
 }
 
 void RunPID()
@@ -190,7 +229,6 @@ void RunPID()
   
   double gap = abs(Setpoint - Input); //distance away from setpoint
   printDebugData("Gap: " + String(gap));
-  
   if (gap < 10)
   { //we're close to setpoint, use conservative tuning parameters
     printDebugData("PID MODE: Conservative");
@@ -246,6 +284,9 @@ void printDebugData(String data)
 
 void SetTemp()
 {
+
+
+
   if ( sample >= TEMP_SAMPLES )
   {
     lcd.setCursor(0, 0);
@@ -253,37 +294,38 @@ void SetTemp()
     String tempStr = String("Temp ");
     tempStr += actualTemp ;
     tempStr += "/" +  String(tempSet);
-
-    
+    //module.clearDisplay();
     lcd.print(tempStr);
     lcd.print("        ");
-    
     lcd.setCursor(0, 1);
     lcd.print("Heat-");
     lcd.print(( heaterOn ? "On" : "Off"));
-    
     lcd.print(" Mot-");
     lcd.print(( motorOn ? "On" : "Off"));
     lcd.print("        ");
-    
-    if ( abs(tempSet - actualTemp) > MIN_TEMP_DIFF_MOTOR) 
-        motorOn = false;
+    if ( abs(tempSet - actualTemp) > MIN_TEMP_DIFF_MOTOR) {
+      motorOn = false;
+    }
     else if ( ( abs(tempSet - actualTemp)  <= MIN_TEMP_DIFF_MOTOR && actualTemp > MIN_EXTRUSION_TEMP  ))
-        motorOn = true;
-        
+    {
+      motorOn = true;
+    }
     sample = 0;
   }
+
 }
 
 
-void AcquireTempSamples()
+void AquireTempSamples()
 {
+
   if (sample < TEMP_SAMPLES )
   {
     tempArray[sample] = read_temp();
     sample++;
     delay(30);
   }
+
 }
 
 int getTemp()
@@ -291,18 +333,23 @@ int getTemp()
   int auxTemp = 0;
   for ( int i = 0; i < TEMP_SAMPLES; i++)
   {
+    //Serial.println(tempArray[i]);
     auxTemp += tempArray[i];
   }
 
-  #ifdef DEBUGMODE
-    return debugTemp;
-  #else
-    return auxTemp / TEMP_SAMPLES;
-  #endif
-}
+  /*Serial.print("T:");
+    Serial.println(auxTemp / TEMP_SAMPLES);*/
 
-void button_up()
+#ifdef DEBUGMODE
+  return debugTemp;
+#else
+  return auxTemp / TEMP_SAMPLES;
+#endif
+
+}
+void temp_up()
 {
+
   if ( millis() -  btmillis > incrementRate && tempSet < MAX_TEMP )
   {
     tempSet += 5;
@@ -310,7 +357,7 @@ void button_up()
   }
 }
 
-void button_down()
+void temp_down()
 {
   if (  millis() - btmillis > incrementRate && tempSet > 0 )
   {
@@ -332,6 +379,7 @@ void rpm_down()
 
 void rpm_up()
 {
+
   if ( millis() -  btmillis > incrementRate && rpmSet < 255 )
   {
     rpmSet += 5;
@@ -374,16 +422,17 @@ void PIDsetup() {
   lcd.setCursor(0, 1);
   lcd.print("     P I D    ");
   delay(1000);
-  
+  //analogReference(EXTERNAL);
   for (int i = 0; i < TEMP_SAMPLES; i++)
-    AcquireTempSamples();
+    AquireTempSamples();
 
+  //Timer
   windowStartTime = millis();
+
   heaterPID.SetOutputLimits(0, WindowSize);//tell the PID to range between 0 and the full window size
+  //inizializzo le variabili
   Input = getTemp();
   printDebugData("Temp: " + String(Input));
   heaterPID.SetMode(AUTOMATIC);
-
-
-
 }
+
