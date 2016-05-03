@@ -18,6 +18,7 @@ All files in this repository are under the GNU - GPL license, use at your own ri
 ![FilaExBR](/Board/filaex.png?raw=true "FilaExBR")
 
 The top layer routing represent jumpers, no need for a double sided PCB!
+You can see a basic functions video here : https://www.youtube.com/watch?v=0D0GXgb3E8Y
 
 #Bill of materials
 Pin Header 1x2 - 3 
@@ -32,7 +33,7 @@ LED5MM - 2
                                                         
 Switch SPDT - 15A @ 12V - 1 
 
-IRF640 N-Channel Enhancement MOSFET (HEXFET); 200V; 18A; 0,18Ohm  - 2 
+IRLB3813 N-Channel Enhancement MOSFET (HEXFET); 30V; 100A~ - 2 
                               
 R1 - 220R
 
@@ -42,9 +43,9 @@ R3 - 47k
 
 Trimpot 300R
 
-ALPS rotary Encoder EC12E with switch - 1 UN
+ALPS rotary Encoder EC12E with switch - 1
                                                                              
-ARDUINO NANO - 1Un
+ARDUINO NANO - 1
 
-LCD Display HD44780LCD 16X02 - 1 Un
+LCD Display HD44780LCD 16X02 - 1
                                                  
