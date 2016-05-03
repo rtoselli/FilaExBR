@@ -31,12 +31,12 @@
 #define PLA_TEMP 180
 #define PET_TEMP 220
 
-#define THERMISTOR_PIN A2
+#define THERMISTOR_PIN A0
 #define MOTOR_PIN 3
 #define HEATER_PIN 5
-#define ENCODER0_SW A5
-#define ENCODER0_A A4
-#define ENCODER0_B A3
+#define ENCODER0_SW A3
+#define ENCODER0_A A1
+#define ENCODER0_B A2
 
 #define TEMP_SAMPLES 10
 #define MAX_TEMP 280
