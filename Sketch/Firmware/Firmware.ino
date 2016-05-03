@@ -95,8 +95,8 @@ double Input, Output;
 double Setpoint;
 int NewSetpoint;
 //Define the aggressive and conservative Tuning Parameters
-double aggKp = 2400, aggKi = 0, aggKd = 0;
-double consKp = 1200, consKi = 0.00, consKd = 0.00;
+double aggKp=4, aggKi=0.2, aggKd=1;
+double consKp=1, consKi=0.05, consKd=0.25;
 //Timer
 int WindowSize = 400;
 unsigned long windowStartTime;
