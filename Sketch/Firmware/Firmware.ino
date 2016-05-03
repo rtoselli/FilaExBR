@@ -24,7 +24,7 @@
 #include <PID_v1.h>
 #include <Encoder.h>
 
-#define DEBUGMODE 1
+//#define DEBUGMODE 1
 
 #define FW_VER "V1.3.6 - Encoder"
 #define ABS_TEMP 220
